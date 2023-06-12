@@ -195,7 +195,6 @@ namespace webrtc
                                            .build();
 
             // todo: measurement decoding time
-            absl::optional<int32_t> decodetime;
             m_decodedCompleteCallback->Decoded(decoded_frame, absl::nullopt, qp);
         }
 

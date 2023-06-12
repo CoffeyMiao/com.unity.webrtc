@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
@@ -316,6 +317,32 @@ namespace Unity.WebRTC
             NativeArray<float> nativeArray = new NativeArray<float>(array, Allocator.Temp);
             SetData(ref nativeArray, channels, sampleRate);
             nativeArray.Dispose();
+        }
+
+        public void MarshalSetData(float[] data, int channels, int sampleRate)
+        {
+            // Allocate unmanaged memory for the float array
+            IntPtr pBuf = Marshal.AllocHGlobal(data.Length * sizeof(float));
+
+            try
+            {
+                // Copy the array to the unmanaged memory
+                Marshal.Copy(data, 0, pBuf, data.Length);
+                ProcessAudio(_trackSource, pBuf, sampleRate, channels, data.Length);
+            }
+            finally
+            {
+                // Don't forget to free the unmanaged memory when you're done
+                Marshal.FreeHGlobal(pBuf);
+            }
+        }
+
+        public void FeedRendererData(float[] data, int channels, int sampleRate)
+        {
+            if (_streamRenderer != null)
+            {
+                _streamRenderer.SetData(data, channels, sampleRate);
+            }
         }
     }
 

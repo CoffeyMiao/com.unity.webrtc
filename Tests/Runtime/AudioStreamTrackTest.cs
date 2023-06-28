@@ -3,6 +3,8 @@ using System.Collections;
 using System.Linq;
 
 using NUnit.Framework;
+using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Unity.Collections;
@@ -152,6 +154,18 @@ namespace Unity.WebRTC.RuntimeTest
             Assert.That(() => track.SetData(data, 1, 0), Throws.ArgumentException);
             Assert.That(() => track.SetData(data, 0, 48000), Throws.ArgumentException);
             Assert.That(() => track.SetData(data, 1, 48000), Throws.Nothing);
+
+            var array = nativeArray.AsReadOnly();
+            Assert.That(() => track.SetData(array, 1, 48000), Throws.Nothing);
+            var slice = nativeArray.Slice();
+            Assert.That(() => track.SetData(slice, 1, 48000), Throws.Nothing);
+
+            unsafe
+            {
+                Assert.That(() => track.SetData(new ReadOnlySpan<float>(nativeArray.GetUnsafePtr(), nativeArray.Length), 1, 48000), Throws.Nothing);
+            }
+
+            nativeArray.Dispose();
             track.Dispose();
             UnityEngine.Object.DestroyImmediate(source.clip);
             UnityEngine.Object.DestroyImmediate(obj);

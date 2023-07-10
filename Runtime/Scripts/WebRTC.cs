@@ -1357,6 +1357,9 @@ namespace Unity.WebRTC
         public static extern void AudioTrackSinkProcessAudio(
             IntPtr sink, float[] data, int length, int channels, int sampleRate);
         [DllImport(WebRTC.Lib)]
+        public static extern int AudioTrackSinkProcessAudioReturnReadLength(
+            IntPtr sink, float[] data, int length, int channels, int sampleRate);
+        [DllImport(WebRTC.Lib)]
         [return: MarshalAs(UnmanagedType.U1)]
         public static extern bool MediaStreamAddTrack(IntPtr stream, IntPtr track);
         [DllImport(WebRTC.Lib)]

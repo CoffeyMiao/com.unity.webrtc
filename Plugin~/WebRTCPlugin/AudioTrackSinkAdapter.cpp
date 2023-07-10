@@ -90,5 +90,32 @@ namespace webrtc
         for (size_t i = 0; i < readLength; i++)
             data[i] = webrtc::S16ToFloat(_bufferIn[i]);
     }
+
+    size_t AudioTrackSinkAdapter::ProcessAudioReturnReadLength(float* data, size_t length, size_t channels, int32_t sampleRate)
+    {
+        RTC_DCHECK(data);
+        RTC_DCHECK(length);
+        RTC_DCHECK(channels);
+        RTC_DCHECK(sampleRate);
+
+        std::memset(data, 0, sizeof(float) * length);
+
+        std::lock_guard<std::mutex> lock(_mutex);
+
+        // Reallocate audio buffer when Unity changes channel count, sample rate,
+        // or data length.
+        if (_buffer == nullptr || _frame.num_channels_ != channels || _frame.sample_rate_hz_ != sampleRate ||
+            _bufferIn.size() != length)
+        {
+            ResizeBuffer(channels, sampleRate, length);
+        }
+
+        size_t readLength = WebRtc_ReadBuffer(_buffer, nullptr, _bufferIn.data(), length);
+
+        for (size_t i = 0; i < readLength; i++)
+            data[i] = webrtc::S16ToFloat(_bufferIn[i]);
+
+        return readLength;
+    }
 } // end namespace webrtc
 } // end namespace unity

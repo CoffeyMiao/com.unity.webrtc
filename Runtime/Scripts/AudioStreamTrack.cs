@@ -165,6 +165,11 @@ namespace Unity.WebRTC
             {
                 NativeMethods.AudioTrackSinkProcessAudio(self, data, data.Length, channels, sampleRate);
             }
+
+            internal int SetDataReturnLength(float[] data, int channels, int sampleRate)
+            {
+                return NativeMethods.AudioTrackSinkProcessAudioReturnReadLength(self, data, data.Length, channels, sampleRate);
+            }
         }
 
         readonly AudioCustomFilter _audioCapturer;
@@ -222,12 +227,13 @@ namespace Unity.WebRTC
         /// This method can be called from a worker thread(non Unity default, e.g. Wwise Source Plugin)
         /// It should be invoked periodically to pull data from audio track.
         /// </summary>
-        public void GetData(float[] data, uint channels, uint sampleRate)
+        public int GetData(float[] data, uint channels, uint sampleRate)
         {
             if (_streamRenderer != null)
             {
-                _streamRenderer.SetData(data, (int)channels, (int)sampleRate);
+                return _streamRenderer.SetDataReturnLength(data, (int)channels, (int)sampleRate);
             }
+            return 0;
         }
 
         /// <summary>

@@ -1398,5 +1398,11 @@ extern "C"
     {
         sink->ProcessAudio(data, length, static_cast<size_t>(channels), sampleRate);
     }
+
+    UNITY_INTERFACE_EXPORT size_t
+    AudioTrackSinkProcessAudioReturnReadLength(AudioTrackSinkAdapter* sink, float* data, size_t length, int channels, int sampleRate)
+    {
+        return sink->ProcessAudioReturnReadLength(data, length, static_cast<size_t>(channels), sampleRate);
+    }
 #pragma clang diagnostic pop
 }

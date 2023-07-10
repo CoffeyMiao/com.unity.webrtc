@@ -1393,10 +1393,10 @@ extern "C"
         track->RemoveSink(sink);
     }
 
-    UNITY_INTERFACE_EXPORT void
+    UNITY_INTERFACE_EXPORT int
     AudioTrackSinkProcessAudio(AudioTrackSinkAdapter* sink, float* data, size_t length, int channels, int sampleRate)
     {
-        sink->ProcessAudio(data, length, static_cast<size_t>(channels), sampleRate);
+        return sink->ProcessAudio(data, length, static_cast<size_t>(channels), sampleRate);
     }
 #pragma clang diagnostic pop
 }

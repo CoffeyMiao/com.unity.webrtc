@@ -26,7 +26,7 @@ namespace webrtc
             size_t number_of_channels,
             size_t number_of_frames) override;
 
-        void ProcessAudio(float* data, size_t length, size_t channels, int32_t sampleRate);
+        int ProcessAudio(float* data, size_t length, size_t channels, int32_t sampleRate);
 
     private:
         void ResizeBuffer(size_t channels, int32_t sampleRate, size_t length);

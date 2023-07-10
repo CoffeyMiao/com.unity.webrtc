@@ -66,7 +66,7 @@ namespace webrtc
         _bufferIn.resize(length);
     }
 
-    void AudioTrackSinkAdapter::ProcessAudio(float* data, size_t length, size_t channels, int32_t sampleRate)
+    int AudioTrackSinkAdapter::ProcessAudio(float* data, size_t length, size_t channels, int32_t sampleRate)
     {
         RTC_DCHECK(data);
         RTC_DCHECK(length);
@@ -89,6 +89,7 @@ namespace webrtc
 
         for (size_t i = 0; i < readLength; i++)
             data[i] = webrtc::S16ToFloat(_bufferIn[i]);
+        return (int)readLength;
     }
 } // end namespace webrtc
 } // end namespace unity

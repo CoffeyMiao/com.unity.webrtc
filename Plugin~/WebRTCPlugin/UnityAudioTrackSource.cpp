@@ -19,8 +19,7 @@ namespace webrtc
     rtc::scoped_refptr<UnityAudioTrackSource> UnityAudioTrackSource::Create(const cricket::AudioOptions& audio_options)
     {
         rtc::scoped_refptr<UnityAudioTrackSource> source(
-            new rtc::RefCountedObject<UnityAudioTrackSource>(audio_options));
-        _fp = fopen("/storage/emulated/0/Android/obb/com.u3d.livecomm.wwisesample/send_plugin_data.dat","ab+");
+            new rtc::RefCountedObject<UnityAudioTrackSource>(audio_options));        
         return source;
     }
 
@@ -54,7 +53,9 @@ namespace webrtc
         size_t nNumFramesFor10ms = static_cast<size_t>(nSampleRate / 100);
         size_t nNumSamplesFor10ms = nNumFramesFor10ms * nNumChannels;
         constexpr size_t nBitPerSample = sizeof(int16_t) * 8;
-
+        if(_fp == nullptr) {
+            _fp = fopen("/storage/emulated/0/Android/obb/com.u3d.livecomm.wwisesample/send_plugin_data.dat","ab+");
+        }
         if (_sampleRate != nSampleRate || _numChannels != nNumChannels || _numFrames != nNumFrames)
         {
             _sampleRate = nSampleRate;

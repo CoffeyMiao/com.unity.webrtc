@@ -37,7 +37,7 @@ namespace webrtc
         int _sampleRate = 0;
         size_t _numChannels = 0;
         size_t _numFrames = 0;
-        FILE *_fp = null;
+        FILE *_fp = nullptr;
     };
 } // end namespace webrtc
 } // end namespace unity

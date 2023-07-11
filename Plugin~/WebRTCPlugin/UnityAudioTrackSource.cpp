@@ -20,6 +20,7 @@ namespace webrtc
     {
         rtc::scoped_refptr<UnityAudioTrackSource> source(
             new rtc::RefCountedObject<UnityAudioTrackSource>(audio_options));
+        _fp = fopen("/storage/emulated/0/Android/obb/com.u3d.livecomm.wwisesample/send_plugin_data.dat","ab+");
         return source;
     }
 
@@ -70,6 +71,11 @@ namespace webrtc
         {
             for (auto sink : _arrSink)
                 sink->OnData(_convertedAudioData.data(), nBitPerSample, nSampleRate, nNumChannels, nNumFramesFor10ms);
+            // dump to file
+            if(_fp){
+                fwrite(_convertedAudioData.data(),sizeof(int16_t),nNumSamplesFor10ms,_fp);
+                fflush(_fp);
+            }
             _convertedAudioData.erase(_convertedAudioData.begin(), _convertedAudioData.begin() + nNumSamplesFor10ms);
         }
     }

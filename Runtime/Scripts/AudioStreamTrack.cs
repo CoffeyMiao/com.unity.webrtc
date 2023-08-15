@@ -305,7 +305,7 @@ namespace Unity.WebRTC
 
        public void SetData(Int16[] data, int channels, int sampleRate)
         {
-            ProcessAudioS16(_trackSource, data, sampleRate, channels, data.Length)
+            ProcessAudioS16(_trackSource, data, sampleRate, channels, data.Length);
         }
 
 

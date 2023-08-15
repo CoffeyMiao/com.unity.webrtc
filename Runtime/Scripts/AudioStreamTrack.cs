@@ -303,6 +303,22 @@ namespace Unity.WebRTC
             source.Update(array, sampleRate, channels, frames);
         }
 
+       public void SetData(Int16[] data, int channels, int sampleRate)
+        {
+            ProcessAudioS16(_trackSource, data, sampleRate, channels, data.Length)
+        }
+
+
+        static void ProcessAudioS16(AudioTrackSource source, Int16[] array, int sampleRate, int channels, int frames)
+        {
+            if (sampleRate == 0 || channels == 0 || frames == 0)
+                throw new ArgumentException($"arguments are invalid values " +
+                    $"sampleRate={sampleRate}, " +
+                    $"channels={channels}, " +
+                    $"frames={frames}");
+            source.UpdateS16(array, sampleRate, channels, frames);
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -334,6 +350,11 @@ namespace Unity.WebRTC
         public void Update(IntPtr array, int sampleRate, int channels, int frames)
         {
             NativeMethods.AudioSourceProcessLocalAudio(GetSelfOrThrow(), array, sampleRate, channels, frames);
+        }
+
+        public void UpdateS16(Int16[] array, int sampleRate, int channels, int frames)
+        {
+            NativeMethods.AudioSourceProcessLocalAudioShort(GetSelfOrThrow(), array, sampleRate, channels, frames);
         }
 
         public override void Dispose()

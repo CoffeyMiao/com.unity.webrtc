@@ -1373,6 +1373,25 @@ extern "C"
         }
     }
 
+    
+    UNITY_INTERFACE_EXPORT void AudioSourceProcessLocalAudioShort(
+        UnityAudioTrackSource* source,
+        int16_t* audio_data,
+        int32 sample_rate,
+        int32 number_of_channels,
+        int32 number_of_frames)
+    {
+        if (source != nullptr)
+        {
+            source->PushAudioDataShort(
+                audio_data,
+                sample_rate,
+                static_cast<size_t>(number_of_channels),
+                static_cast<size_t>(number_of_frames));
+        }
+    }
+
+
     UNITY_INTERFACE_EXPORT AudioTrackSinkAdapter* ContextCreateAudioTrackSink(Context* context)
     {
         return context->CreateAudioTrackSinkAdapter();

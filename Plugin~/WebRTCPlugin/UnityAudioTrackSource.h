@@ -22,6 +22,8 @@ namespace webrtc
         void RemoveSink(AudioTrackSinkInterface* sink) override;
 
         void PushAudioData(const float* pAudioData, int nSampleRate, size_t nNumChannels, size_t nNumFrames);
+        
+        void PushAudioDataShort(const int16_t* pAudioData, int nSampleRate, size_t nNumChannels, size_t nNumFrames);
 
     protected:
         UnityAudioTrackSource();

@@ -7,12 +7,12 @@ using UnityEngine;
 namespace Unity.WebRTC
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public static class AudioSourceExtension
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="source"></param>
         /// <param name="track"></param>
@@ -219,6 +219,18 @@ namespace Unity.WebRTC
         }
 
         /// <summary>
+        /// This method can be called from a worker thread(non Unity default, e.g. Wwise Source Plugin)
+        /// It should be invoked periodically to pull data from audio track.
+        /// </summary>
+        public void GetData(float[] data, uint channels, uint sampleRate)
+        {
+            if (_streamRenderer != null)
+            {
+                _streamRenderer.SetData(data, (int)channels, (int)sampleRate);
+            }
+        }
+
+        /// <summary>
         ///
         /// </summary>
         public override void Dispose()
@@ -247,6 +259,7 @@ namespace Unity.WebRTC
             base.Dispose();
         }
 
+#if UNITY_2020_1_OR_NEWER
         /// <summary>
         ///
         /// </summary>
@@ -261,9 +274,10 @@ namespace Unity.WebRTC
                 ProcessAudio(_trackSource, (IntPtr)ptr, sampleRate, channels, nativeArray.Length);
             }
         }
+#endif
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="nativeSlice"></param>
         /// <param name="channels"></param>
@@ -304,7 +318,7 @@ namespace Unity.WebRTC
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="array"></param>
         /// <param name="channels"></param>
@@ -324,7 +338,7 @@ namespace Unity.WebRTC
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="span"></param>
         /// <param name="channels"></param>

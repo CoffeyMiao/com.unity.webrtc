@@ -88,10 +88,10 @@ target_compile_definitions(WebRTCLib
 )
 
 if(iOS OR macOS)
-  target_sources(WebRTCLib
-    PRIVATE
-      ../libcxx/debug.cpp
-  )
+  # target_sources(WebRTCLib
+  #   PRIVATE
+  #     ../libcxx/debug.cpp
+  # )
 else()
   target_sources(WebRTCLib
     PRIVATE

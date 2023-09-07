@@ -20,6 +20,7 @@ cd "$SOLUTION_DIR"
 cmake . \
   -G Xcode \
   -D "CMAKE_OSX_ARCHITECTURES=arm64;x86_64" \
+  -D CMAKE_XCODE_ATTRIBUTE_ENABLE_BITCODE=NO \
   -B build
 
 cmake \

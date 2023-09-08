@@ -34,7 +34,7 @@ namespace webrtc
         , m_physicalDevice(physicalDevice)
         , m_device(device)
         , m_graphicsQueue(graphicsQueue)
-        , m_commandPool(nullptr)
+        , m_commandPool(reinterpret_cast<VkCommandPool>(nullptr))
         , m_queueFamilyIndex(queueFamilyIndex)
         , m_allocator(nullptr)
 #if CUDA_PLATFORM

@@ -383,3 +383,6 @@ Runtime/Plugins/x86_64/*.pdb.meta
 
 out
 .cipd
+depot_tools
+src
+!Runtime/Plugins/x86/

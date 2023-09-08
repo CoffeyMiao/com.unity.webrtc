@@ -98,6 +98,15 @@
       "inherits": "default-windows"
     },
     {
+      "name": "Win32-windows-msvc",
+      "description": "Sets Win32 arch, generator, compilers",
+      "inherits": "default-windows",
+      "architecture": {
+        "value": "Win32",
+        "strategy": "set"
+      }
+    },
+    {
       "name": "x64-windows-clang",
       "description": "Sets x64 arch, generator, compilers",
       "toolset": "ClangCL",
@@ -174,7 +183,7 @@
       "name": "release-windows-msvc",
       "displayName": "Build Release",
       "description": "Release build using MSVC",
-      "configurePreset": "x64-windows-msvc",
+      "configurePreset": "Win32-windows-msvc",
       "configuration": "Release",
       "cleanFirst": true
     },

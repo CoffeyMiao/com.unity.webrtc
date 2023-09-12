@@ -88,10 +88,10 @@ target_compile_definitions(WebRTCLib
 )
 
 if(iOS OR macOS)
-  target_sources(WebRTCLib
-    PRIVATE
-      ../libcxx/debug.cpp
-  )
+  # target_sources(WebRTCLib
+  #   PRIVATE
+  #     ../libcxx/debug.cpp
+  # )
 else()
   target_sources(WebRTCLib
     PRIVATE
@@ -125,8 +125,9 @@ if(Windows)
   # Use precompiled header
   set(CMAKE_CXX_FLAGS 
     "${CMAKE_CXX_FLAGS} /Yu /Yupch.h")
+  # TODO: support both x86 & x64
   set(PROJECT_BINARY_DIR
-    "${CMAKE_SOURCE_DIR}/../Runtime/Plugins/x86_64")
+    "${CMAKE_SOURCE_DIR}/../Runtime/Plugins/x86")
 
   target_compile_definitions(WebRTCLib
     PUBLIC

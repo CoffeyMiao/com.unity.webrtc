@@ -12,11 +12,11 @@ namespace webrtc
 
     VulkanTexture2D::VulkanTexture2D(const uint32_t w, const uint32_t h)
         : ITexture2D(w, h)
-        , m_textureImage(nullptr)
-        , m_textureImageMemory(nullptr)
+        , m_textureImage(reinterpret_cast<VkImage>(nullptr))
+        , m_textureImageMemory(reinterpret_cast<VkDeviceMemory>(nullptr))
         , m_textureImageMemorySize(0)
         , m_device(nullptr)
-        , m_fence(nullptr)
+        , m_fence(reinterpret_cast<VkFence>(nullptr))
         , m_commandBuffer(nullptr)
         , m_textureFormat(VK_FORMAT_B8G8R8A8_UNORM)
     {
@@ -35,11 +35,11 @@ namespace webrtc
         if(m_fence)
             vkDestroyFence(m_device, m_fence, nullptr);
 
-        m_textureImage = nullptr;
-        m_textureImageMemory = nullptr;
+        m_textureImage = reinterpret_cast<VkImage>(nullptr);
+        m_textureImageMemory = reinterpret_cast<VkDeviceMemory>(nullptr);
         m_textureImageMemorySize = 0;
         m_device = nullptr;
-        m_commandPool = nullptr;
+        m_commandPool = reinterpret_cast<VkCommandPool>(nullptr);
     }
 
     bool VulkanTexture2D::Init(const VkPhysicalDevice physicalDevice, const VkDevice device, const VkCommandPool commandPool)

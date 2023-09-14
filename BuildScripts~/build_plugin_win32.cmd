@@ -13,4 +13,4 @@ echo Build com.unity.webrtc Plugin
 
 cd %SOLUTION_DIR%
 cmake --preset=Win32-windows-msvc
-cmake --build --preset=release-windows-msvc --target=WebRTCPlugin
+cmake --build --preset=debug-windows-msvc --target=WebRTCPlugin

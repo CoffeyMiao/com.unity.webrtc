@@ -175,7 +175,7 @@
       "name": "debug-windows-msvc",
       "displayName": "Build Debug",
       "description": "Debug build using MSVC",
-      "configurePreset": "x64-windows-msvc",
+      "configurePreset": "Win32-windows-msvc",
       "configuration": "Debug",
       "verbose": true
     },

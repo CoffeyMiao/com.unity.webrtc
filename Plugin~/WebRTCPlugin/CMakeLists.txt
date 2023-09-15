@@ -126,9 +126,9 @@ if(Windows)
   set(CMAKE_CXX_FLAGS 
     "${CMAKE_CXX_FLAGS} /Yu /Yupch.h")
 
-  if(CMAKE_CL_64)
+  if(Windows_x64)
     set(PROJECT_BINARY_DIR  "${CMAKE_SOURCE_DIR}/../Runtime/Plugins/x64")
-  else(CMAKE_CL_86)
+  else(Windows_x86)
     set(PROJECT_BINARY_DIR  "${CMAKE_SOURCE_DIR}/../Runtime/Plugins/x86")
   endif()
 

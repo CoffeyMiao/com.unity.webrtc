@@ -140,7 +140,7 @@ namespace webrtc
         return vkGetInstanceProcAddr(instance, funcName);
     }
 
-    PFN_vkGetInstanceProcAddr
+    PFN_vkGetInstanceProcAddr UNITY_INTERFACE_API
     InterceptVulkanInitialization(PFN_vkGetInstanceProcAddr getInstanceProcAddr, void* userdata)
     {
         vkGetInstanceProcAddr = getInstanceProcAddr;

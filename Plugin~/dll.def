@@ -1,0 +1,7 @@
+LIBRARY
+EXPORTS
+    UnityPluginLoad
+    UnityPluginUnload
+    GetReleaseBuffersFunc
+    GetRenderEventFunc
+    GetUpdateTextureFunc

@@ -20,10 +20,14 @@ set(WEBRTC_LIBRARY_DIR
 )
 
 # There is only `x64` on Windows, macOS, and Linux
-# iOS and macOS use universal binary contains `x64` and `arm64`
-if(Windows OR Linux)
-# TODO: support both x86 & x64
-  set(SYSTEM_PROCESSOR x86)
+# iOSWindows_x64 and macOS use universal binary contains `x64` and `arm64`
+if(Windows OR inux)
+# todo: support linux 64
+  if(Windows_x86)
+    set(SYSTEM_PROCESSOR x86)
+  else()
+    set(SYSTEM_PROCESSOR x64)
+  endif()
   set(WEBRTC_LIBRARY_DIR ${WEBRTC_LIBRARY_DIR}/${SYSTEM_PROCESSOR})
 endif()
 if(Android)

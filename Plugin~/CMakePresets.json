@@ -11,7 +11,7 @@
       "displayName": "Default Windows Config",
       "hidden": true,
       "binaryDir": "${sourceDir}/out/build/${presetName}",
-      "generator": "Visual Studio 16 2019",
+      "generator": "Visual Studio 17 2022",
       "architecture": {
         "value": "x64",
         "strategy": "set"
@@ -181,6 +181,22 @@
     },
     {
       "name": "release-windows-msvc",
+      "displayName": "Build Release",
+      "description": "Release build using MSVC",
+      "configurePreset": "x64-windows-msvc",
+      "configuration": "Release",
+      "cleanFirst": true
+    },
+    {
+      "name": "debug-windows-msvc-Win32",
+      "displayName": "Build Debug",
+      "description": "Debug build using MSVC",
+      "configurePreset": "Win32-windows-msvc",
+      "configuration": "Debug",
+      "verbose": true
+    }, 
+    {
+      "name": "release-windows-msvc-Win32",
       "displayName": "Build Release",
       "description": "Release build using MSVC",
       "configurePreset": "Win32-windows-msvc",

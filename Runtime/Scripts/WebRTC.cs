@@ -1405,7 +1405,7 @@ namespace Unity.WebRTC
         [DllImport(WebRTC.Lib)]
         public static extern void AudioSourceProcessLocalAudio(IntPtr source, IntPtr array, int sampleRate, int channels, int frames);
          [DllImport(WebRTC.Lib)]
-        public static extern void AudioSourceProcessLocalAudioF32(IntPtr source, float[] array, int sampleRate, int channels, int frames);
+        public static extern void AudioSourceProcessLocalAudio(IntPtr source, float[] array, int sampleRate, int channels, int frames);
         [DllImport(WebRTC.Lib)]
         public static extern void AudioSourceProcessLocalAudioShort(IntPtr source, Int16[] array, int sampleRate, int channels, int frames);
         [DllImport(WebRTC.Lib)]

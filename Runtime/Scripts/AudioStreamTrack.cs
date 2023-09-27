@@ -363,7 +363,7 @@ namespace Unity.WebRTC
         
         public void Update(float[] array, int sampleRate, int channels, int frames)
         {
-            NativeMethods.AudioSourceProcessLocalAudio(GetSelfOrThrow(), array, sampleRate, channels, frames);
+            NativeMethods.AudioSourceProcessLocalAudioF32(GetSelfOrThrow(), array, sampleRate, channels, frames);
         }
 
         public void Update(IntPtr array, int sampleRate, int channels, int frames)

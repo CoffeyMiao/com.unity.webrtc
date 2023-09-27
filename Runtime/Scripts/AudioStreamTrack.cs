@@ -303,11 +303,25 @@ namespace Unity.WebRTC
             source.Update(array, sampleRate, channels, frames);
         }
 
+        static void ProcessAudio(AudioTrackSource source, float[] array, int sampleRate, int channels, int frames)
+        {
+            if (sampleRate == 0 || channels == 0 || frames == 0)
+                throw new ArgumentException($"arguments are invalid values " +
+                                            $"sampleRate={sampleRate}, " +
+                                            $"channels={channels}, " +
+                                            $"frames={frames}");
+            source.Update(array, sampleRate, channels, frames);
+        }
+
        public void SetData(Int16[] data, int channels, int sampleRate)
         {
             ProcessAudioS16(_trackSource, data, sampleRate, channels, data.Length);
         }
 
+       public void SetData(float[] data, int channels, int sampleRate)
+       {
+           ProcessAudio(_trackSource, data, sampleRate, channels, data.Length);
+       }
 
         static void ProcessAudioS16(AudioTrackSource source, Int16[] array, int sampleRate, int channels, int frames)
         {
@@ -345,6 +359,11 @@ namespace Unity.WebRTC
         ~AudioTrackSource()
         {
             this.Dispose();
+        }
+        
+        public void Update(float[] array, int sampleRate, int channels, int frames)
+        {
+            NativeMethods.AudioSourceProcessLocalAudio(GetSelfOrThrow(), array, sampleRate, channels, frames);
         }
 
         public void Update(IntPtr array, int sampleRate, int channels, int frames)

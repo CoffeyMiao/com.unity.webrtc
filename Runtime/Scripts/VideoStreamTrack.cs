@@ -251,6 +251,8 @@ namespace Unity.WebRTC
                 Graphics.Blit(sourceTexture_, destTexture_);
             }
 
+            destTexture_ = Twod2render(rotateTexture(render22D(destTexture_), true));
+
             // todo:: This comparison is not sufficiency but it is for workaround of freeze bug.
             // Texture.GetNativeTexturePtr method freezes Unity Editor on apple silicon.
             if (prevTexture_ != destTexture_)
@@ -260,6 +262,45 @@ namespace Unity.WebRTC
                 prevTexture_ = destTexture_;
             }
             WebRTC.Context.Encode(ptr_);
+        }
+
+        public Texture2D rotateTexture(Texture2D originalTexture, bool clockwise){
+            Color32[] original = originalTexture.GetPixels32();
+            Color32[] rotated = new Color32[original.Length];
+            int w = originalTexture.width;
+            int h = originalTexture.height;
+    
+            int iRotated, iOriginal;
+    
+            for (int j = 0; j < h; ++j)
+            {
+                for (int i = 0; i < w; ++i)
+                {
+                    iRotated = (i + 1) * h - j - 1;
+                    iOriginal = clockwise ? original.Length - 1 - (j * w + i) : j * w + i;
+                    rotated[iRotated] = original[iOriginal];
+                }
+            }
+    
+            Texture2D rotatedTexture = new Texture2D(h, w);
+            rotatedTexture.SetPixels32(rotated);
+            rotatedTexture.Apply();
+            return rotatedTexture;
+        }
+        public Texture2D render22D(RenderTexture renderTexture) {
+            int width = renderTexture.width;
+            int height = renderTexture.height;
+            Texture2D texture2D = new Texture2D(width, height, TextureFormat.ARGB32, false);
+            RenderTexture.active = renderTexture;
+            texture2D.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+            texture2D.Apply();
+            return texture2D;
+        }
+        public RenderTexture Twod2render(Texture2D texture2D) {
+            RenderTexture rt = new RenderTexture(texture2D.width/2, texture2D.height/2, 0);
+            RenderTexture.active = rt;
+            Graphics.Blit(texture2D, rt);
+            return rt;
         }
 
         public override void Dispose()

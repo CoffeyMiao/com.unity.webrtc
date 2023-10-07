@@ -92,6 +92,8 @@ namespace Unity.WebRTC
             m_source.sourceTexture_ = texture;
             m_source.destTexture_ = dest;
             m_source.needFlip_ = needFlip;
+            m_source.texture2D = new Texture2D(dest.width, dest.height, TextureFormat.RGBA32, false);
+            m_source.rotateTexture2D = new Texture2D(dest.height, dest.width, TextureFormat.RGBA32, false);
         }
 
         /// <summary>
@@ -218,6 +220,8 @@ namespace Unity.WebRTC
         internal bool needFlip_ = false;
         internal Texture sourceTexture_;
         internal RenderTexture destTexture_;
+        internal Texture2D texture2D;
+        internal Texture2D rotateTexture2D;
 
         IntPtr ptr_ = IntPtr.Zero;
         EncodeData data_;
@@ -242,6 +246,7 @@ namespace Unity.WebRTC
             //  - duplicate RenderTexture from its source texture
             //  - call Graphics.Blit command with flip material every frame
             //  - it might be better to implement this if possible
+
             if (needFlip_)
             {
                 Graphics.Blit(sourceTexture_, destTexture_, s_scale, s_offset);
@@ -251,7 +256,9 @@ namespace Unity.WebRTC
                 Graphics.Blit(sourceTexture_, destTexture_);
             }
 
-            destTexture_ = Twod2render(rotateTexture(render22D(destTexture_), true));
+            texture2D = render22D(destTexture_, texture2D);
+            rotateTexture2D = rotateTexture(texture2D, rotateTexture2D, true);
+            Graphics.Blit(rotateTexture2D, destTexture_);
 
             // todo:: This comparison is not sufficiency but it is for workaround of freeze bug.
             // Texture.GetNativeTexturePtr method freezes Unity Editor on apple silicon.
@@ -264,7 +271,7 @@ namespace Unity.WebRTC
             WebRTC.Context.Encode(ptr_);
         }
 
-        public Texture2D rotateTexture(Texture2D originalTexture, bool clockwise){
+        public Texture2D rotateTexture(Texture2D originalTexture, Texture2D rotateTexture2D, bool clockwise){
             Color32[] original = originalTexture.GetPixels32();
             Color32[] rotated = new Color32[original.Length];
             int w = originalTexture.width;
@@ -281,26 +288,18 @@ namespace Unity.WebRTC
                     rotated[iRotated] = original[iOriginal];
                 }
             }
-    
-            Texture2D rotatedTexture = new Texture2D(h, w);
-            rotatedTexture.SetPixels32(rotated);
-            rotatedTexture.Apply();
-            return rotatedTexture;
+        
+            rotateTexture2D.SetPixels32(rotated);
+            rotateTexture2D.Apply();
+            return rotateTexture2D;
         }
-        public Texture2D render22D(RenderTexture renderTexture) {
+        public Texture2D render22D(RenderTexture renderTexture, Texture2D texture2D) {
             int width = renderTexture.width;
             int height = renderTexture.height;
-            Texture2D texture2D = new Texture2D(width, height, TextureFormat.ARGB32, false);
             RenderTexture.active = renderTexture;
             texture2D.ReadPixels(new Rect(0, 0, width, height), 0, 0);
             texture2D.Apply();
             return texture2D;
-        }
-        public RenderTexture Twod2render(Texture2D texture2D) {
-            RenderTexture rt = new RenderTexture(texture2D.width/2, texture2D.height/2, 0);
-            RenderTexture.active = rt;
-            Graphics.Blit(texture2D, rt);
-            return rt;
         }
 
         public override void Dispose()

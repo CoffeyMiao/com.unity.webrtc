@@ -66,16 +66,18 @@ namespace Unity.WebRTC
         /// </summary>
         /// <param name="source"></param>
         /// <param name="needFlip"></param>
-        public VideoStreamTrack(Texture source, bool needFlip = true)
+        /// <param name="cameraAngle"></param>
+        public VideoStreamTrack(Texture source, bool needFlip = true, int cameraAngle = 0)
             : this(source,
                   CreateRenderTexture(source.width, source.height),
                   Guid.NewGuid().ToString(),
                   new VideoTrackSource(),
-                  needFlip)
+                  needFlip,
+                  cameraAngle)
         {
         }
 
-        internal VideoStreamTrack(Texture texture, RenderTexture dest, string label, VideoTrackSource source, bool needFlip)
+        internal VideoStreamTrack(Texture texture, RenderTexture dest, string label, VideoTrackSource source, bool needFlip, int cameraAngle)
             : base(WebRTC.Context.CreateVideoTrack(label, source.self))
         {
             var error = WebRTC.ValidateTextureSize(texture.width, texture.height, Application.platform);
@@ -92,6 +94,7 @@ namespace Unity.WebRTC
             m_source.sourceTexture_ = texture;
             m_source.destTexture_ = dest;
             m_source.needFlip_ = needFlip;
+            m_source.cameraAngle = cameraAngle;
             m_source.texture2D = new Texture2D(dest.width, dest.height, TextureFormat.RGBA32, false);
             m_source.rotateTexture2D = new Texture2D(dest.height, dest.width, TextureFormat.RGBA32, false);
         }
@@ -218,6 +221,7 @@ namespace Unity.WebRTC
         static Vector2 s_offset = new Vector2(0, 1f);
 
         internal bool needFlip_ = false;
+        internal int cameraAngle = 0;
         internal Texture sourceTexture_;
         internal RenderTexture destTexture_;
         internal Texture2D texture2D;
@@ -256,9 +260,19 @@ namespace Unity.WebRTC
                 Graphics.Blit(sourceTexture_, destTexture_);
             }
 
-            texture2D = render22D(destTexture_, texture2D);
-            rotateTexture2D = rotateTexture(texture2D, rotateTexture2D, true);
-            Graphics.Blit(rotateTexture2D, destTexture_);
+            if(cameraAngle != 0)
+            {
+                texture2D = render22D(destTexture_, texture2D);
+                if(cameraAngle == 90)
+                {
+                    rotateTexture2D = rotateTexture(texture2D, rotateTexture2D, false);
+                }
+                else if(cameraAngle == 270)
+                {
+                    rotateTexture2D = rotateTexture(texture2D, rotateTexture2D, true);
+                }
+                Graphics.Blit(rotateTexture2D, destTexture_);
+            } 
 
             // todo:: This comparison is not sufficiency but it is for workaround of freeze bug.
             // Texture.GetNativeTexturePtr method freezes Unity Editor on apple silicon.

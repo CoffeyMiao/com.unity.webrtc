@@ -95,8 +95,9 @@ namespace Unity.WebRTC
             m_source.destTexture_ = dest;
             m_source.needFlip_ = needFlip;
             m_source.cameraAngle = cameraAngle;
-            m_source.texture2D = new Texture2D(dest.width, dest.height, TextureFormat.RGBA32, false);
-            m_source.rotateTexture2D = new Texture2D(dest.height, dest.width, TextureFormat.RGBA32, false);
+            m_source.texture2D_ = new Texture2D(dest.width, dest.height, TextureFormat.RGBA32, false);
+            m_source.rotateTexture2D_ = new Texture2D(dest.height, dest.width, TextureFormat.RGBA32, false);
+            m_source.rotateRenderTexture_ = CreateRenderTexture(dest.height, dest.width);
         }
 
         /// <summary>
@@ -224,8 +225,9 @@ namespace Unity.WebRTC
         internal int cameraAngle = 0;
         internal Texture sourceTexture_;
         internal RenderTexture destTexture_;
-        internal Texture2D texture2D;
-        internal Texture2D rotateTexture2D;
+        internal RenderTexture rotateRenderTexture_;
+        internal Texture2D texture2D_;
+        internal Texture2D rotateTexture2D_;
 
         IntPtr ptr_ = IntPtr.Zero;
         EncodeData data_;
@@ -251,33 +253,49 @@ namespace Unity.WebRTC
             //  - call Graphics.Blit command with flip material every frame
             //  - it might be better to implement this if possible
 
-            if (needFlip_)
+
+            if (!(sourceTexture_ as WebCamTexture).isPlaying)
             {
-                Graphics.Blit(sourceTexture_, destTexture_, s_scale, s_offset);
+                return;
+            }
+            int angle = (sourceTexture_ as WebCamTexture).videoRotationAngle;
+            if(angle != 0)
+            {
+                if (angle == 90)
+                {
+                    rotateTexture2D_ = rotateTexture(sourceTexture_ as WebCamTexture, rotateTexture2D_, true);
+                }
+                else if (angle == 270)
+                {
+                    rotateTexture2D_ = rotateTexture(sourceTexture_ as WebCamTexture, rotateTexture2D_, false);
+                }
+                if (needFlip_)
+                {
+                    Graphics.Blit(rotateTexture2D_, rotateRenderTexture_, s_scale, s_offset);
+                }
+                else
+                {
+                    Graphics.Blit(rotateTexture2D_, rotateRenderTexture_);
+                }
+                destTexture_ = rotateRenderTexture_;
             }
             else
             {
-                Graphics.Blit(sourceTexture_, destTexture_);
+                if (needFlip_)
+                {
+                    Graphics.Blit(sourceTexture_, destTexture_, s_scale, s_offset);
+                }
+                else
+                {
+                    Graphics.Blit(sourceTexture_, destTexture_);
+                }
             }
-
-            if(cameraAngle != 0)
-            {
-                texture2D = render22D(destTexture_, texture2D);
-                if(cameraAngle == 90)
-                {
-                    rotateTexture2D = rotateTexture(texture2D, rotateTexture2D, false);
-                }
-                else if(cameraAngle == 270)
-                {
-                    rotateTexture2D = rotateTexture(texture2D, rotateTexture2D, true);
-                }
-                Graphics.Blit(rotateTexture2D, destTexture_);
-            } 
 
             // todo:: This comparison is not sufficiency but it is for workaround of freeze bug.
             // Texture.GetNativeTexturePtr method freezes Unity Editor on apple silicon.
             if (prevTexture_ != destTexture_)
             {
+                Debug.Log("123");
                 data_ = new EncodeData(destTexture_, self);
                 Marshal.StructureToPtr(data_, ptr_, true);
                 prevTexture_ = destTexture_;
@@ -285,7 +303,7 @@ namespace Unity.WebRTC
             WebRTC.Context.Encode(ptr_);
         }
 
-        public Texture2D rotateTexture(Texture2D originalTexture, Texture2D rotateTexture2D, bool clockwise){
+        public Texture2D rotateTexture(WebCamTexture originalTexture, Texture2D rotateTexture2D, bool clockwise){
             Color32[] original = originalTexture.GetPixels32();
             Color32[] rotated = new Color32[original.Length];
             int w = originalTexture.width;
@@ -306,14 +324,6 @@ namespace Unity.WebRTC
             rotateTexture2D.SetPixels32(rotated);
             rotateTexture2D.Apply();
             return rotateTexture2D;
-        }
-        public Texture2D render22D(RenderTexture renderTexture, Texture2D texture2D) {
-            int width = renderTexture.width;
-            int height = renderTexture.height;
-            RenderTexture.active = renderTexture;
-            texture2D.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-            texture2D.Apply();
-            return texture2D;
         }
 
         public override void Dispose()

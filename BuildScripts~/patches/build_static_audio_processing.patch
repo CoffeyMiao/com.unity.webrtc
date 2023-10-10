@@ -1,0 +1,21 @@
+diff --git a/modules/audio_processing/BUILD.gn b/modules/audio_processing/BUILD.gn
+index 64e83a006b..6f67e02920 100644
+--- a/modules/audio_processing/BUILD.gn
++++ b/modules/audio_processing/BUILD.gn
+@@ -151,7 +151,7 @@ rtc_library("gain_controller2") {
+   ]
+ }
+ 
+-rtc_library("audio_processing") {
++rtc_static_library("audio_processing") {
+   visibility = [ "*" ]
+   configs += [ ":apm_debug_dump" ]
+   sources = [
+@@ -164,6 +164,7 @@ rtc_library("audio_processing") {
+     "gain_control_impl.h",
+     "render_queue_item_verifier.h",
+   ]
++  complete_static_lib = true
+ 
+   defines = []
+   deps = [

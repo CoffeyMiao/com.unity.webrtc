@@ -82,7 +82,7 @@ do
 
   filename="libaudio_processing.a"
   if [ $is_debug = "true" ]; then
-    filename="libaudio_processing.a"
+    filename="libaudio_processingd.a"
   fi
 
   # make universal binary

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 
-set(CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET "10.0" CACHE STRING "Minimum iOS deployment version")
-set(CMAKE_OSX_DEPLOYMENT_TARGET "10.12" CACHE STRING "Minimum OS X deployment version")
+set(CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET "11.0" CACHE STRING "Minimum iOS deployment version")
+set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13" CACHE STRING "Minimum OS X deployment version")
 
 project(webrtc
   VERSION 2.4.0
@@ -17,6 +17,11 @@ enable_testing()
 # Windows, Linux, macOS, iOS
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(Windows TRUE)
+  if(CMAKE_CL_64)
+    set(Windows_x64 TRUE)
+  else(CMAKE_CL_86)
+    set(Windows_x86 TRUE)
+  endif()
 endif()
 if(CMAKE_SYSTEM_NAME STREQUAL "iOS")
   set(iOS TRUE)

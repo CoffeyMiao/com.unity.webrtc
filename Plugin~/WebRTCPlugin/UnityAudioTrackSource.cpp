@@ -74,6 +74,23 @@ namespace webrtc
         }
     }
 
+    // data should be 10ms
+    void UnityAudioTrackSource::PushAudioDataShort(
+        const int16_t* pAudioData, int nSampleRate, size_t nNumChannels, size_t nNumFrames)
+    {
+        RTC_DCHECK(pAudioData);
+        RTC_DCHECK(nSampleRate);
+        RTC_DCHECK(nNumChannels);
+        RTC_DCHECK(nNumFrames);
+
+        std::lock_guard<std::mutex> lock(_mutex);
+
+        constexpr size_t nBitPerSample = sizeof(int16_t) * 8;
+
+         for (auto sink : _arrSink)
+                sink->OnData(pAudioData, nBitPerSample, nSampleRate, nNumChannels, nNumFrames);
+    }
+
     UnityAudioTrackSource::UnityAudioTrackSource() { }
     UnityAudioTrackSource::UnityAudioTrackSource(const cricket::AudioOptions& audio_options)
         : _options(audio_options)
